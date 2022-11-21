@@ -1,0 +1,55 @@
+﻿@model WebApplication1.Controllers.HomeController.MyModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <div class="col-md-12">
+                @Html.DropDownList("FromJson", new MultiSelectList(Model.AvailableItems, "Value", "Text"), new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function formatState(state) {
+            if (!state.id) {
+                return state.text;
+            }
+
+            let element = '<span>' + state.text + '</span>';
+
+            if (state.selected) {
+                return $('<span>Super icon</span>' + element);
+            }
+
+            return $(element);
+        }
+
+        $(document).ready(function () {
+            const target = $("#FromJson");
+
+            target.select2({
+                multiple: true,
+                closeOnSelect: false,
+                allowClear: true,
+                dropdownAutoWidth: true,
+                placeholder: "Select something",
+                scrollAfterSelect: true,
+                templateResult: formatState,
+            });
+            target.val(null).trigger("change");
+
+            target.on("select2:select", function (e) {
+                target.select2('close');
+                target.select2('open');
+            });
+        });
+    </script>
+}
