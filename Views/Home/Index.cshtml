@@ -18,14 +18,14 @@
 @section Scripts
 {
     <script type="text/javascript">
-        function formatState(state) {
+        function formatState(state, target) {
             if (!state.id) {
                 return state.text;
             }
 
-            let element = '<span>' + state.text + '</span>';
-
-            if (state.selected) {
+            const element = '<span>' + state.text + '</span>';
+            const selectedElements = target.select2('data')?.map(e => e.element) || [];
+            if (selectedElements.includes(state.element)) {
                 return $('<span>Super icon</span>' + element);
             }
 
@@ -39,10 +39,16 @@
                 multiple: true,
                 closeOnSelect: false,
                 allowClear: true,
-                dropdownAutoWidth: true,
-                placeholder: "Select something",
-                scrollAfterSelect: true,
-                templateResult: formatState,
+                dropdownAutoWidth: false,
+                placeholder: "Select...",
+                scrollAfterSelect: false,
+                templateResult: (state) => formatState(state, target),
+                selectOnClose: false,
+                language: {
+                    "noResults": function () {
+                        return "Super no results";
+                    }
+                },
             });
             target.val(null).trigger("change");
 
